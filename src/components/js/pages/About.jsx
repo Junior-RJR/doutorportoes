@@ -1,8 +1,11 @@
 import { useEffect, useRef } from "react"
+import { Target, Users, Zap, Shield } from "lucide-react"
 import "../../css/About.css"
 
 const About = () => {
   const aboutRef = useRef(null)
+  const valuesRef = useRef(null)
+  const teamRef = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -16,10 +19,43 @@ const About = () => {
       { threshold: 0.1 },
     )
 
-    if (aboutRef.current) observer.observe(aboutRef.current)
+    const refs = [aboutRef, valuesRef, teamRef]
+    refs.forEach((ref) => {
+      if (ref.current) observer.observe(ref.current)
+    })
 
     return () => observer.disconnect()
   }, [])
+
+  const stats = [
+    { number: "15+", label: "Anos de Experiência" },
+    { number: "5000+", label: "Portões Instalados" },
+    { number: "24h", label: "Atendimento" },
+    { number: "100%", label: "Satisfação" },
+  ]
+
+  const values = [
+    {
+      icon: <Target size={32} />,
+      title: "Qualidade",
+      description: "Utilizamos apenas equipamentos de primeira linha e seguimos os mais altos padrões de qualidade.",
+    },
+    {
+      icon: <Users size={32} />,
+      title: "Confiança",
+      description: "Construímos relacionamentos duradouros baseados na transparência e honestidade.",
+    },
+    {
+      icon: <Zap size={32} />,
+      title: "Agilidade",
+      description: "Atendimento rápido e eficiente, especialmente em situações de emergência.",
+    },
+    {
+      icon: <Shield size={32} />,
+      title: "Segurança",
+      description: "Priorizamos a segurança em todos os nossos projetos e instalações.",
+    },
+  ]
 
   return (
     <div className="about-page">
@@ -53,28 +89,18 @@ const About = () => {
             </div>
 
             <div className="about-stats">
-              <div className="stat-card">
-                <div className="stat-number">15+</div>
-                <div className="stat-label">Anos de Experiência</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number">5000+</div>
-                <div className="stat-label">Portões Instalados</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number">24h</div>
-                <div className="stat-label">Atendimento</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Satisfação</div>
-              </div>
+              {stats.map((stat, index) => (
+                <div key={index} className="stat-card">
+                  <div className="stat-number">{stat.number}</div>
+                  <div className="stat-label">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="values-section">
+      <section className="values-section" ref={valuesRef}>
         <div className="container">
           <div className="section-header">
             <h2>Nossos Valores</h2>
@@ -82,34 +108,18 @@ const About = () => {
           </div>
 
           <div className="values-grid">
-            <div className="value-card">
-              <div className="value-icon">🎯</div>
-              <h3>Qualidade</h3>
-              <p>Utilizamos apenas equipamentos de primeira linha e seguimos os mais altos padrões de qualidade.</p>
-            </div>
-
-            <div className="value-card">
-              <div className="value-icon">🤝</div>
-              <h3>Confiança</h3>
-              <p>Construímos relacionamentos duradouros baseados na transparência e honestidade.</p>
-            </div>
-
-            <div className="value-card">
-              <div className="value-icon">⚡</div>
-              <h3>Agilidade</h3>
-              <p>Atendimento rápido e eficiente, especialmente em situações de emergência.</p>
-            </div>
-
-            <div className="value-card">
-              <div className="value-icon">🛡️</div>
-              <h3>Segurança</h3>
-              <p>Priorizamos a segurança em todos os nossos projetos e instalações.</p>
-            </div>
+            {values.map((value, index) => (
+              <div key={index} className="value-card" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="value-icon">{value.icon}</div>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="team-section">
+      <section className="team-section" ref={teamRef}>
         <div className="container">
           <div className="section-header">
             <h2>Nossa Equipe</h2>

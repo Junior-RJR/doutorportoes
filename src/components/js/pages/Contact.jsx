@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { MessageCircle, Send } from "lucide-react"
 import "../../css/Contact.css"
 
 const Contact = () => {
@@ -10,6 +11,7 @@ const Contact = () => {
     message: "",
   })
   const contactRef = useRef(null)
+  const locationRef = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -23,7 +25,10 @@ const Contact = () => {
       { threshold: 0.1 },
     )
 
-    if (contactRef.current) observer.observe(contactRef.current)
+    const refs = [contactRef, locationRef]
+    refs.forEach((ref) => {
+      if (ref.current) observer.observe(ref.current)
+    })
 
     return () => observer.disconnect()
   }, [])
@@ -37,6 +42,7 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    // Aqui você implementaria o envio do formulário
     console.log("Form submitted:", formData)
     alert("Mensagem enviada com sucesso! Entraremos em contato em breve.")
     setFormData({
@@ -46,6 +52,29 @@ const Contact = () => {
       service: "",
       message: "",
     })
+  }
+
+  const handleWhatsAppSubmit = (e) => {
+    e.preventDefault()
+
+    const phoneNumber = "5511999999999"
+
+    const serviceName = formData.service
+      ? document.querySelector(`option[value="${formData.service}"]`).textContent
+      : "Não especificado"
+
+    const message = `
+*Solicitação de Orçamento - Doutor Portões*
+Nome: ${formData.name}
+Email: ${formData.email}
+Telefone: ${formData.phone}
+Serviço: ${serviceName}
+Mensagem: ${formData.message || "Olá! Gostaria de solicitar um orçamento."}
+    `.trim()
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+
+    window.open(whatsappUrl, "_blank")
   }
 
   return (
@@ -63,11 +92,11 @@ const Contact = () => {
         <div className="container">
           <div className="contact-grid">
             <div className="contact-info">
-              <h2>Fale Conosco</h2>
+              {/* <h2>Fale Conosco</h2>
               <p>
                 Estamos prontos para atender você! Entre em contato através dos canais abaixo ou preencha o formulário
                 ao lado.
-              </p>
+              </p> */}
 
               <div className="contact-methods">
                 <div className="contact-method">
@@ -107,6 +136,7 @@ const Contact = () => {
                 </div>
               </div>
 
+            </div>
               <div className="business-hours">
                 <h3>Horário de Atendimento</h3>
                 <div className="hours-list">
@@ -125,7 +155,7 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-
+            
             <div className="contact-form">
               <h2>Solicite seu Orçamento</h2>
               <form onSubmit={handleSubmit}>
@@ -191,16 +221,24 @@ const Contact = () => {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-large">
-                  Enviar Mensagem
-                </button>
+                <div className="form-buttons">
+                  <button type="submit" className="btn btn-primary">
+                    <Send size={18} />
+                    Enviar por E-mail
+                  </button>
+
+                  <button type="button" onClick={handleWhatsAppSubmit} className="btn btn-whatsapp">
+                    <MessageCircle size={18} />
+                    Enviar por WhatsApp
+                  </button>
+                </div>
               </form>
             </div>
           </div>
-        </div>
+        {/* </div> */}
       </section>
 
-      <section className="location-section">
+      <section className="location-section" ref={locationRef}>
         <div className="container">
           <div className="section-header">
             <h2>Nossa Localização</h2>
@@ -209,6 +247,13 @@ const Contact = () => {
 
           <div className="location-content">
             <div className="location-info">
+              <h3>Endereço</h3>
+              <div className="address">
+                <p>📍 Rua Forte de Iguatemi, 220</p>
+                <p>Jardim Adutora, São Paulo - SP</p>
+                <p>CEP: 05163-000</p>
+              </div>
+
               <h3>Área de Atendimento</h3>
               <ul>
                 <li>São Paulo - Capital</li>
@@ -220,11 +265,17 @@ const Contact = () => {
               </ul>
             </div>
 
-            <div className="map-placeholder">
-              <div className="map-content">
-                <h3>📍 São Paulo - SP</h3>
-                <p>Atendimento em toda a região metropolitana</p>
-              </div>
+            <div className="map-container">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3658.4!2d-46.7!3d-23.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5a2b2ed7f3a7%3A0x8b86c2e725c53e3a!2sRua%20Forte%20de%20Iguatemi%2C%20220%20-%20Jardim%20Adutora%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1234567890!5m2!1spt-BR!2sbr"
+                width="100%"
+                height="400"
+                style={{ border: 0, borderRadius: "16px" }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Localização Doutor Portões - Rua Forte de Iguatemi, 220"
+              ></iframe>
             </div>
           </div>
         </div>
